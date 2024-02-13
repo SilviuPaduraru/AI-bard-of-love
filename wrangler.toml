@@ -1,15 +1,12 @@
-name = "cheekfreaks"
+name = "ndisidore-bard-of-love"
 main = "src/index.js"
 compatibility_date = "2024-01-17"
 
+rules = [{ type = "Text", globs = ["**/*.ndjson"], fallthrough = true }]
+
 [[vectorize]]
 binding = "VECTORIZE_INDEX"
-index_name = "lyrics"
-
-[[r2_buckets]]
-binding = "LYRICS_BUCKET"
-bucket_name = "lyrics"
-preview_bucket_name = "lyrics"
+index_name = "ndisidore-poems"
 
 [ai]
 binding = "AI"

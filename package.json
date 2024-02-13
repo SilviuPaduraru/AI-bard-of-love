@@ -1,5 +1,5 @@
 {
-  "name": "cheekfreaks",
+  "name": "bard-of-love",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,12 +8,14 @@
     "start": "wrangler dev --assets ./assets --remote"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "@cloudflare/workers-types": "^4.20231002.0",
+    "typescript": "^5.3.0",
+    "wrangler": "^3.28.0"
   },
   "dependencies": {
-    "@cloudflare/ai": "^1.0.47",
-    "@langchain/cloudflare": "^0.0.1",
-    "hono": "^3.12.6",
-    "langchain": "^0.1.4"
+    "@cloudflare/ai": "^1.0.50",
+    "@langchain/cloudflare": "^0.0.2",
+    "hono": "^4.0.1",
+    "langchain": "^0.1.17"
   }
 }

@@ -1,117 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="styles.css" />
-		<title>Cheekfreak</title>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.14/vue.global.prod.min.js"></script>
-	</head>
-	<body>
-		<div id="app">
-			<h1>Cheekfreaks Online - ALPHA</h1>
-			<div>
-				<form>
-					<label for="modelSelect">Model:</label>
-					<select id="modelSelect" v-model="model">
-						<option v-for="model in models">{{model}}</option>
-					</select>
-				</form>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="styles.css" />
+	<title>Bernard the Love Bard</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.14/vue.global.prod.min.js"></script>
+</head>
+
+<body>
+	<div id="app">
+		<h1>Bernard the Love Bard</h1>
+		<div>
+			<form>
+				<label for="modelSelect">Model:</label>
+				<select id="modelSelect" v-model="model">
+					<option v-for="model in models">{{model}}</option>
+				</select>
+			</form>
+		</div>
+		<div id="window">
+			<div id="title-bar">
+				<div id="title">Bernard the Love Bard Instant Messenger</div>
+				<div id="buttons">
+					<a class="title-button" @click.prevent="resetChat">X</a>
+				</div>
 			</div>
-			<div id="window">
-				<div id="title-bar">
-					<div id="title">America's Local Band Instant Messenger</div>
-					<div id="buttons">
-						<a class="title-button" @click.prevent="resetChat">X</a>
+			<div id="message-window">
+				<div id="conversation">
+					<div><span class="username">{{otherUsername}}:</span> I'm so happy to see you! I would ❤️ to chat!</div>
+					<!-- Dynamic Messages here -->
+					<div v-for="message in messages">
+						<span class="username" :class="message.role === 'user' ? 'you' : ''">{{message.role === "user" ?
+							"You" : otherUsername }}:</span>
+						{{message.content}}
 					</div>
-				</div>
-				<div id="message-window">
-					<div id="conversation">
-						<div><span class="username">{{otherUsername}}:</span> sup?</div>
-						<!-- Dynamic Messages here -->
-						<div v-for="message in messages">
-							<span class="username" :class="message.role === 'user' ? 'you' : ''"
-								>{{message.role === "user" ? "You" : otherUsername }}:</span
-							>
-							{{message.content}}
+					<form @submit.prevent="sendPrompt">
+						<div id="message-input">
+							<input type="text" id="message-text" placeholder="Type your message here" name="prompt"
+								v-model="userMessage" />
+							<button id="send-button" type="Submit">Send</button>
 						</div>
-            <form @submit.prevent="sendPrompt">
-						  <div id="message-input">
-								<input type="text" id="message-text" placeholder="Type your message here" name="prompt" v-model="userMessage" />
-								<button id="send-button" type="Submit">Send</button>
-              </div>
-							</form>
-						</div>
-					</div>
+					</form>
 				</div>
-				<p>🎧 listen to <a href="https://linktr.ee/cheekface" target="_blank">cheekface</a></p>
 			</div>
 		</div>
-		<script>
-			const { createApp } = Vue;
+	</div>
+	</div>
+	<script>
+		const { createApp } = Vue;
 
-			const sounds = {
-				doorOpen: new Audio('/audio/doorOpen.wav'),
-        doorSlam: new Audio('/audio/doorSlam.wav'),
-				imSent: new Audio('/audio/imSent.wav'),
-				imReceived: new Audio('/audio/imReceived.wav'),
-			};
+		const sounds = {
+			doorOpen: new Audio('/audio/doorOpen.wav'),
+			doorSlam: new Audio('/audio/doorSlam.wav'),
+			imSent: new Audio('/audio/imSent.wav'),
+			imReceived: new Audio('/audio/imReceived.wav'),
+		};
 
-			const app = createApp({
-				data() {
-					const models = [
-						'@cf/meta/llama-2-7b-chat-int8',
-						'@cf/meta/llama-2-7b-chat-fp16',
-						'@cf/mistral/mistral-7b-instruct-v0.1	',
-						'@hf/thebloke/codellama-7b-instruct-awq',
-					];
-					return {
-						models,
-						model: models[0],
-						userMessage: '',
-						otherUsername: 'Cheekfreak',
-						messages: [],
-						asked: '',
-					};
+		const app = createApp({
+			data() {
+				const models = [
+					'@cf/meta/llama-2-7b-chat-int8',
+					'@cf/meta/llama-2-7b-chat-fp16',
+					'@cf/mistral/mistral-7b-instruct-v0.1	',
+					'@hf/thebloke/codellama-7b-instruct-awq',
+				];
+				return {
+					models,
+					model: models[0],
+					userMessage: '',
+					otherUsername: 'Bernard',
+					messages: [],
+					asked: '',
+				};
+			},
+			methods: {
+				resetChat() {
+					this.userMessage = '';
+					this.messages = [];
+					sounds.doorSlam.play();
+					sounds.doorOpen.play();
 				},
-				methods: {
-					resetChat() {
-						this.userMessage = '';
-						this.messages = [];
-						sounds.doorSlam.play();
-            sounds.doorOpen.play();
-					},
-					async sendPrompt() {
-						const bodyJSON = JSON.stringify({
-							model: this.model,
-							messages: this.messages,
-							userMessage: this.userMessage,
-						});
-						this.messages.push({ role: 'user', content: this.userMessage });
-						sounds.imSent.play();
-						this.userMessage = '';
-						this.messages.push({ role: 'assistant', content: '' });
-						const response = await fetch('/prompt', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: bodyJSON,
-						});
-						const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-						while (true) {
-							const { value, done } = await reader.read();
-							if (done) {
-								console.log('Stream done');
-								sounds.imReceived.play();
-								break;
-							}
-							this.messages[this.messages.length - 1].content += value;
+				async sendPrompt() {
+					const bodyJSON = JSON.stringify({
+						model: this.model,
+						messages: this.messages,
+						userMessage: this.userMessage,
+					});
+					this.messages.push({ role: 'user', content: this.userMessage });
+					sounds.imSent.play();
+					this.userMessage = '';
+					this.messages.push({ role: 'assistant', content: '' });
+					const response = await fetch('/prompt', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: bodyJSON,
+					});
+					const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+					while (true) {
+						const { value, done } = await reader.read();
+						if (done) {
+							console.log('Stream done');
+							sounds.imReceived.play();
+							break;
 						}
-					},
+						this.messages[this.messages.length - 1].content += value;
+					}
 				},
-			});
-			app.mount('#app');
-		</script>
-	</body>
+			},
+		});
+		app.mount('#app');
+	</script>
+</body>
+
 </html>
