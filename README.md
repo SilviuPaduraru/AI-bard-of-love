@@ -24,7 +24,7 @@ npx wrangler secret put CLOUDFLARE_API_TOKEN
 Create your Vector database
 
 ```bash
-npx wrangler vectorize create ndisidore-poems --preset "@cf/baai/bge-base-en-v1.5"
+npx wrangler vectorize create spaduraru-poems --preset "@cf/baai/bge-base-en-v1.5"
 ```
 
 ## Deploy

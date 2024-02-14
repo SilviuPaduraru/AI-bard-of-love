@@ -1,4 +1,4 @@
-name = "ndisidore-bard-of-love"
+name = "spaduraru-bard-of-love"
 main = "src/index.js"
 compatibility_date = "2024-01-17"
 
@@ -6,7 +6,7 @@ rules = [{ type = "Text", globs = ["**/*.ndjson"], fallthrough = true }]
 
 [[vectorize]]
 binding = "VECTORIZE_INDEX"
-index_name = "ndisidore-poems"
+index_name = "spaduraru-poems"
 
 [ai]
 binding = "AI"
